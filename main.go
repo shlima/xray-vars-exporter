@@ -18,6 +18,7 @@ import (
 var (
 	FlagXrayMetricsAddress  = flag.String("xray-metrics-address", "http://127.0.0.1:11111", "Xray metrics addsress")
 	FlagXrayPollingInterval = flag.Duration("xray-polling-interval", 5*time.Second, "Xray polling interval")
+	FlagXrayPollingTimeout  = flag.Duration("xray-polling-timeout", 5*time.Second, "Xray polling timeout")
 	FlagListen              = flag.String("listen", "127.0.0.1:3000", "Exporter listen address")
 	FlagMetricsPath         = flag.String("metrics-path", "/metrics", "Path that serves the Xray metrics")
 	FlagProxyPassAddress    = flag.String("proxy-pass-metrics-before-address", "", "Append proxy result before the metrics payload (like xray-exporter address)")
@@ -34,7 +35,9 @@ func main() {
 	m.MustRegister(registry)
 
 	client := xray.NewClient(lo.FromPtr(FlagXrayMetricsAddress))
+
 	poller := xray.NewPoller(client, m)
+	poller.SetRequestTimeoput(lo.FromPtr(FlagXrayPollingTimeout))
 	poller.AsyncStartPolling(ctx, lo.FromPtr(FlagXrayPollingInterval))
 
 	mux := http.NewServeMux()
