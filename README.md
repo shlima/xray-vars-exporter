@@ -23,6 +23,9 @@ allowing the scraper to collect all metrics in a single HTTP request.
 | `-xray-polling-interval duration` | Xray polling interval | `5s` |
 | `-xray-polling-timeout duration` | Xray polling timeout | `5s` |
 
+- `-xray-metrics-address` copy from 3x-ui Settings → Xray Configs → Basic → Statistics Tab → Metrics Endpoint Input
+- `-proxy-pass-metrics-before-address` provide optional address of the `xray-exporter` metrics endpoint so that this service can proxy the request and append its response to the main metrics response, thereby **enriching** it.
+
 ## output
 
 ```
