@@ -17,7 +17,9 @@ func (w *Web) GetMetricsHandler(registry *prometheus.Registry) func(writer http.
 		}
 
 		promhttp.
-			HandlerFor(registry, promhttp.HandlerOpts{}).
+			HandlerFor(registry, promhttp.HandlerOpts{
+				DisableCompression: true,
+			}).
 			ServeHTTP(NewFakeResponseWriter(writer), reader)
 	}
 }
