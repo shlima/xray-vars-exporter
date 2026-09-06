@@ -1,5 +1,7 @@
 # why
 
+![Grafana Screenshot](./docs/grafana.jpg)
+
 [xray-exporter](https://github.com/compassvpn/xray-exporter) does not provide statistics 
 for balancer observatories in `x-ray` / `3x-ui` because the Xray Core itself does not 
 expose this information through the gRPC Stats endpoint.
