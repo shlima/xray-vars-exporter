@@ -1,6 +1,8 @@
 package metrics
 
 import (
+	"fmt"
+
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/samber/lo"
 )
@@ -34,36 +36,36 @@ type Observatory struct {
 	LastTry   *prometheus.GaugeVec
 }
 
-func NewObservatory() *Observatory {
+func NewObservatory(prefix string) *Observatory {
 	lables := lo.Keys(NewLablesObservatory().ToHash())
 
 	return &Observatory{
 		Alive: prometheus.NewGaugeVec(prometheus.GaugeOpts{
-			Name: "xray_observatory_alive",
+			Name: fmt.Sprintf("%s_observatory_alive", prefix),
 			Help: "Whether the Xray observatory outbound is alive.",
 		},
 			lables),
 
 		Delay: prometheus.NewGaugeVec(
 			prometheus.GaugeOpts{
-				Name: "xray_observatory_delay_ms",
+				Name: fmt.Sprintf("%s_observatory_delay_ms", prefix),
 				Help: "Xray observatory probe delay in milliseconds.",
 			},
 			lables),
 
 		DelayHist: prometheus.NewHistogramVec(prometheus.HistogramOpts{
-			Name:    "xray_observatory_delay_ms_histogram",
+			Name:    fmt.Sprintf("%s_observatory_delay_ms_histogram", prefix),
 			Help:    "Xray observatory probe delay in milliseconds",
 			Buckets: DefaultObservatoryDelayHistogramBuckets},
 			lables),
 
 		LastSeen: prometheus.NewGaugeVec(prometheus.GaugeOpts{
-			Name: "xray_observatory_last_seen_timestamp",
+			Name: fmt.Sprintf("%s_observatory_last_seen_timestamp", prefix),
 			Help: "Unix timestamp when the outbound was last seen alive."},
 			lables),
 
 		LastTry: prometheus.NewGaugeVec(prometheus.GaugeOpts{
-			Name: "xray_observatory_last_try_timestamp",
+			Name: fmt.Sprintf("%s_observatory_last_try_timestamp", prefix),
 			Help: "Unix timestamp when the outbound was last probed."},
 			lables),
 	}

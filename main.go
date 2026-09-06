@@ -21,6 +21,7 @@ var (
 	FlagXrayPollingTimeout  = flag.Duration("xray-polling-timeout", 5*time.Second, "Xray polling timeout")
 	FlagListen              = flag.String("listen", "127.0.0.1:3000", "Exporter listen address")
 	FlagMetricsPath         = flag.String("metrics-path", "/metrics", "Path that serves the Xray metrics")
+	FlagMetricsPrefix       = flag.String("metrics-prefix", "xray_vars", "Prometheus metrics name prefix")
 	FlagProxyPassAddress    = flag.String("proxy-pass-metrics-before-address", "", "Append proxy result before the metrics payload (like xray-exporter address)")
 )
 
@@ -31,7 +32,7 @@ func init() {
 func main() {
 	ctx := context.Background()
 	registry := prometheus.NewRegistry()
-	m := metrics.NewMetrics()
+	m := metrics.NewMetrics(lo.FromPtr(FlagMetricsPrefix))
 	m.MustRegister(registry)
 
 	client := xray.NewClient(lo.FromPtr(FlagXrayMetricsAddress))

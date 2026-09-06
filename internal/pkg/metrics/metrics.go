@@ -1,6 +1,8 @@
 package metrics
 
 import (
+	"fmt"
+
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/samber/lo"
 )
@@ -10,12 +12,12 @@ type Metrics struct {
 	ScrapeErrors prometheus.Counter
 }
 
-func NewMetrics() *Metrics {
+func NewMetrics(prefix string) *Metrics {
 	return &Metrics{
-		Observatory: NewObservatory(),
+		Observatory: NewObservatory(prefix),
 
 		ScrapeErrors: prometheus.NewCounter(prometheus.CounterOpts{
-			Name: "xray_observatory_scrape_errors_total",
+			Name: fmt.Sprintf("%s_scrape_errors_total", prefix),
 			Help: "Total number of failed Xray observatory scrapes."}),
 	}
 }
