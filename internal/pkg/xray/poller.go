@@ -18,6 +18,7 @@ type Poller struct {
 	stdout                       io.Writer
 	stderr                       io.Writer
 	requestTimeout               time.Duration
+	overrideOfflineDelay         time.Duration
 	metrics                      metrics.IMetrics
 	previousObservatoryOutbounds []string
 	mx                           sync.Mutex
@@ -33,7 +34,17 @@ func NewPoller(client IClient, metrics metrics.IMetrics) *Poller {
 }
 
 func (p *Poller) SetRequestTimeoput(input time.Duration) {
+	p.mx.Lock()
+	defer p.mx.Unlock()
+
 	p.requestTimeout = input
+}
+
+func (p *Poller) SetOverrideOfflineDelay(input time.Duration) {
+	p.mx.Lock()
+	defer p.mx.Unlock()
+
+	p.overrideOfflineDelay = input
 }
 
 func (p *Poller) AsyncStartPolling(ctx context.Context, interval time.Duration) {
@@ -91,10 +102,14 @@ func (p *Poller) cleanPreviousObservatories(current []string) {
 
 func (p *Poller) gaugeObservatory(outbound string, input XrayObservatory) {
 	labels := metrics.LabelsObservatory{Outbound: outbound}
-
 	obs := p.metrics.GetObservatory()
-	obs.SetAlive(labels, input.Alive)
-	obs.SetDelay(labels, input.Delay)
+
+	if !input.Alive && p.overrideOfflineDelay != 0 {
+		obs.SetDelay(labels, p.overrideOfflineDelay.Milliseconds())
+	} else {
+		obs.SetAlive(labels, input.Alive)
+	}
+
 	obs.ObserveDelayHist(labels, input.Delay)
 	obs.SetLastSeen(labels, input.LastSeenTime)
 	obs.SetLastTry(labels, input.LastTryTime)

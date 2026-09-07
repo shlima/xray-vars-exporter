@@ -15,15 +15,16 @@ allowing the scraper to collect all metrics in a single HTTP request.
 
 ## arguments
 
-| Option | Description | Default |
-|---|---|---|
-| `-listen string` | Exporter listen address | `127.0.0.1:3000` |
-| `-metrics-path string` | Path that serves the Xray metrics | `/metrics` |
-| `-metrics-prefix string` | Prometheus metrics name prefix | `xray_vars` |
+| Option                                      | Description | Default |
+|---------------------------------------------|---|---|
+| `-listen string`                            | Exporter listen address | `127.0.0.1:3000` |
+| `-metrics-path string`                      | Path that serves the Xray metrics | `/metrics` |
+| `-metrics-prefix string`                    | Prometheus metrics name prefix | `xray_vars` |
 | `-proxy-pass-metrics-before-address string` | Append proxy result before the metrics payload (e.g. xray-exporter address) | — |
-| `-xray-metrics-address string` | Xray metrics address | `http://127.0.0.1:11111` |
-| `-xray-polling-interval duration` | Xray polling interval | `5s` |
-| `-xray-polling-timeout duration` | Xray polling timeout | `5s` |
+| `-xray-metrics-address string`              | Xray metrics address | `http://127.0.0.1:11111` |
+| `-xray-override-offline-delay duration`     | Sets this delay when selector in balancer is offline | 5.555s |
+| `-xray-polling-interval duration`           | Xray polling interval | `5s` |
+| `-xray-polling-timeout duration`            | Xray polling timeout | `5s` |
 
 - `-xray-metrics-address` copy from 3x-ui Settings → Xray Configs → Basic → Statistics Tab → Metrics Endpoint Input
 - `-proxy-pass-metrics-before-address` provide optional address of the `xray-exporter` metrics endpoint so that this service can proxy the request and append its response to the main metrics response, thereby **enriching** it.
